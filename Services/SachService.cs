@@ -8,6 +8,7 @@ namespace HuynhKom_lab00_bansach.Services
     public interface ISachService
     {
         Task<dynamic> getDataSach(int idcd, int idnxb);
+        Task<dynamic> getSachByID(int maSach);
     }
 
     public class SachService : ISachService
@@ -17,6 +18,27 @@ namespace HuynhKom_lab00_bansach.Services
         public SachService(QuanLySachContext context)
         {
             _context = context;
+        }
+        public async Task<dynamic> getSachByID(int maSach)
+        {
+            var kq = await _context.Saches.FindAsync(maSach);
+            if (kq == null)
+            {
+                return new
+                {
+                    statusCode = 404,
+                    detail = "Không có"
+                };
+            }
+            else
+            {
+                return new
+                {
+                    statusCode = 200,
+                    detail = kq
+                }; 
+            }
+
         }
         public async Task<dynamic> getDataSach(int idcd, int idnxb)
         {

@@ -27,6 +27,19 @@ namespace HuynhKom_lab00_bansach.Controllers
             return View();
         }
         [HttpPost]
+        public async Task<IActionResult>getDetailSach(int masach)
+        {
+            var take = await _services.getSachByID(masach);
+            if(take.statusCode == 404)
+            {
+                return BadRequest();
+            } else
+            {
+                return Ok(take.detail);
+            }    
+        }
+
+        [HttpPost]
         public async Task<IActionResult>GetDSsach(int idcd, int idnxb)
         {
             return Ok(await _services.getDataSach(idcd, idnxb)); 
