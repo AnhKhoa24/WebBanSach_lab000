@@ -1,0 +1,55 @@
+﻿
+
+<div class="container mt-3">
+    <div class="row">
+        <div class="col-3 overflow-auto" style="height:690px;">
+            <span class="fs-2">Chủ đề sách</span>
+            <table id="chuDe" class="table table-bordered table-hover mt-2">
+                @foreach (var item in ViewBag.ChuDes)
+                {
+                    <tr data-idchude="@item.MaCd">
+                        <td style="user-select: none;">@item.TenChuDe</td>
+                    </tr>
+                }
+            </table>
+            <span class="fs-2">Nhà xuất bản</span>
+            <table id="nhaXuatBan" class="table table-bordered table-hover mt-2">
+
+                @foreach (var item in ViewBag.NhaXuatBans)
+                {
+                    <tr data-idchude="@item.MaNxb">
+                        <td>@item.TenNxb</td>
+                    </tr>
+                }
+            </table>
+
+        </div>
+        <div class="col-9 overflow-auto" style="height:690px;">
+            <div class="row ">
+                <img src="/img/bannerblog.png" style="height: 150px" alt="" />
+            </div>
+            <div class="row g-2 mt-2" id="DanhSach">
+                <div class="col-3">
+                    <div class="card border-0 shadow-sm">
+                        <img src="/img/anhbia1.jpg" class="card-img-top" style="height: 200px; object-fit: cover;" alt="Sách">
+                        <div class="card-body text-center">
+                            <h5 class="card-title">Tên sách</h5>
+                            <p class="card-text text-muted">Giá: 100.000 VND</p>
+                            <a href="#" class="btn btn-primary">Mua ngay</a>
+                        </div>
+                    </div>
+                </div>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="container-fluid mt-3 bg-dark" style="height:33px">
+    <p class="text-center text-white">Coding by aKdev - github: AnhKhoa24</p>
+</div>
+<script src="~/js/index.js"></script>
+
