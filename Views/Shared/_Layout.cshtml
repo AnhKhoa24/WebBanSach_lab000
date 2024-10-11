@@ -12,45 +12,56 @@
 </head>
 
 <body>
+    <style>
+        .dropdown-toggle::after {
+            display: none; /* Ẩn mũi tên dropdown */
+        }
+    </style>
+
 
     <div class="container-fluid">
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm p-3 mb-3 bg-body rounded">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Navbar</a>
+                <a class="navbar-brand fw-bold text-primary" href="#">Bán sách</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="#">Home</a>
+                            <a class="nav-link active text-primary fw-bold" aria-current="page" href="#">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Link</a>
+                            <a class="nav-link text-dark" href="#">Giỏ hàng</a>
                         </li>
-                        <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                Dropdown
-                            </a>
-                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                <li><a class="dropdown-item" href="#">Action</a></li>
-                                <li><a class="dropdown-item" href="#">Another action</a></li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="#">Something else here</a></li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
-                        </li>
+                        
                     </ul>
-                    <form class="d-flex">
-                        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                        <button class="btn btn-outline-success" type="submit">Search</button>
+                    <!-- Search Form in the Center -->
+                    <form class="d-flex mx-auto" style="width: 35%;">
+                        <input class="form-control me-2 shadow-sm rounded-pill" type="search" placeholder="Search" aria-label="Search" style="flex-grow: 1;">
+                        <button class="btn btn-outline-success rounded-pill" type="submit">Search</button>
                     </form>
+                    <!-- Avatar section on the right -->
+                    <div class="ms-auto dropdown d-none" >
+                        <a href="#" class="dropdown-toggle" id="avatarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <img src="~/img/khoa.jpg" style="width:40px;" class="rounded-pill shadow-sm">
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm" aria-labelledby="avatarDropdown">
+                            <li><a class="dropdown-item" href="#">Thông tin người dùng</a></li>
+                            <li><a class="dropdown-item" href="#">Đăng xuất</a></li>
+                        </ul>
+                    </div>
+
+                    <div class="ms-auto">
+                            <a class="nav-link active text-primary fw-bold" aria-current="page" href="#">Đăng nhập</a>
+                    </div>
+
                 </div>
             </div>
         </nav>
     </div>
+
+
     @RenderBody()
 
 
