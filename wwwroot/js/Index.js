@@ -88,7 +88,118 @@ function showdetail(masach)
         }
     });
 }
-function addtoCart(masach)
+function addtoCart(masach) {
+    var token = getCookie('access_token');
+    if (token) {
+        $.ajax({
+            url: '/MuaHang/addToCart',
+            type: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            data:{
+                ma_Sach: masach,
+                sl: 1
+            },
+            success: function (response) {
+                swal("Thành công!", "Bạn đã thêm vào giỏ hàng!", "success");
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    } else {
+        var modal = new bootstrap.Modal($('#loginModal')[0]);
+        modal.show();
+    }
+}
+
+function getCart(show) {
+    var token = getCookie('access_token');
+    if (token) {
+        $.ajax({
+            url: '/MuaHang/getCart',
+            type: 'POST',
+            headers: {
+                'Authorization': 'Bearer ' + token
+            },
+            success: function (response) {
+
+                $("#cartInCanvas").empty();
+                var tongtienf = 0;
+                response.forEach(function (element) {
+                    var formattedPrice = new Intl.NumberFormat('en-US').format(element.gia);
+                    var formattedTotal = new Intl.NumberFormat('en-US').format(element.tongtien);
+                    var item = `<tr>
+                        <td>
+                            <img src="/img/anhbia1.jpg" class="img-fluid" style="height:150px;max-width: 100px;">
+                        </td>
+                      <td style="width: 230px; height: 150px;">
+                        <div>
+                            <strong>${element.tensach}</strong> 
+                            </div>
+                             <div class="mt-2">
+                            <strong>SL</strong>
+                            <input type="number" class="form-control d-inline-block" value="${element.sl}" min="1" style="width: 70px;">
+                        </div>
+                        <div class="mt-2">
+                            <strong>Giá:</strong> <span>${formattedPrice} VNĐ</span>
+                        </div>
+                        <div class="mt-2">
+                            <strong>Tổng:</strong> <span>${formattedTotal} VNĐ</span>
+                        </div>
+                        </td>
+                        <td>
+                            <button class="btn btn-danger btn-sm" onclick="removeItem(${element.id})">Xóa</button>
+                        </td>
+                    </tr>`;
+                    $("#cartInCanvas").append(item);
+                    tongtienf += element.tongtien;
+                });
+                var formattedTotalf = new Intl.NumberFormat('en-US').format(tongtienf);
+                $("#cartInCanvas").append(`<tr style="width: 230px;">
+                        <td  class="text-end"><strong>Tổng tiền:</strong></td>
+                        <td colspan="2"><strong>${formattedTotalf} VNĐ</strong></td>
+                    </tr>
+                    `);
+
+                if (response.length > 0) {
+                    $("#btnThanhToan").prop("disabled", false);
+                } else {
+                    $("#btnThanhToan").prop("disabled", true);
+                }
+
+
+                if (show) {
+                    var modal = new bootstrap.Offcanvas($('#giohangCanvas')[0]);
+                    modal.show();
+                }
+            },
+            error: function (error) {
+                console.error(error);
+            }
+        });
+    } else {
+        var modal = new bootstrap.Modal($('#loginModal')[0]);
+        modal.show();
+    }
+}
+function removeItem(id)
 {
-    swal("Thành công!", "Bạn thêm vào giỏ hàng!", "success");
+    $.ajax({
+        url: '/MuaHang/removeCartItem',
+        type: 'POST',
+        headers: {
+            'Authorization': 'Bearer ' + getCookie('access_token')
+        },
+        data: {
+            idCart:id
+        },
+        success: function (response) {
+            getCart()
+        },
+        error: function (error) {
+            console.error(error);
+        }
+    });
 }

@@ -28,26 +28,53 @@ namespace HuynhKom_lab00_bansach.Controllers
             var check = await _context.Khachhangs.FirstOrDefaultAsync(x => (x.Taikhoan == name || x.Email == name) && (x.Matkhau == password));
             if (check == null)
             {
-                return Unauthorized();
+                return Unauthorized(new{
+                    message ="Đăng nhập thất bại!"
+                });
             }
+            var token = GenerateJwtToken(check.Email!, check.HoTen!, check.MaKh);
 
-            //// Thay thế bằng cách xác thực thực tế
-            //if (model.Email == "test@example.com" && model.Password == "password")
+            //Response.Cookies.Append("jwtToken", token, new CookieOptions
             //{
-            //    var token = GenerateJwtToken(model.Email);
-            //    return Ok(new { Token = token });
-            //}
-            var token = GenerateJwtToken(check.Email!, check.HoTen!);
+            //    HttpOnly = true,
+            //    Secure = true, // Chỉ gửi cookie qua HTTPS
+            //    SameSite = SameSiteMode.None // Cho phép cookie được gửi từ miền khác
+            //});
+
             return Ok(new { Token = token });
         }
-        private string GenerateJwtToken(string email, string username)
+
+        [HttpPost]
+        public async Task<IActionResult> LoginAdmin(string name, string password)
+        {
+            var check = await _context.TaiKhoanQuanLies.FirstOrDefaultAsync(x => (x.Name == name) && (x.Matkhau == password));
+            if (check == null)
+            {
+                return Unauthorized(new
+                {
+                    message = "Đăng nhập thất bại!"
+                });
+            }
+            var token = GenerateJwtTokenAdmin(check.Name!, check.Ten!, check.UserId, check.Role!);
+            Response.Cookies.Append("jwtTokenAdmin", token, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true, // Chỉ gửi cookie qua HTTPS
+                SameSite = SameSiteMode.None // Cho phép cookie được gửi từ miền khác
+            });
+            return Ok(new { Token = token });
+        }
+
+
+        private string GenerateJwtToken(string email, string username, int userId)
         {
             var claims = new[]
             {
-        new Claim(JwtRegisteredClaimNames.Sub, email),
-        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        new Claim("username", username) // Thêm claim cho tên tài khoản
-    };
+             new Claim(JwtRegisteredClaimNames.Sub, email),
+             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+             new Claim("username", username),
+             new Claim("maKH", userId.ToString())
+            };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -56,13 +83,35 @@ namespace HuynhKom_lab00_bansach.Controllers
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
+                expires: DateTime.Now.AddDays(1),
                 signingCredentials: creds);
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        private string GenerateJwtTokenAdmin(string name, string ten, int userId, string role)
+        {
+            var claims = new[]
+            {
+            new Claim(JwtRegisteredClaimNames.Sub, name),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+            new Claim("ten", ten),
+            new Claim("UserID", userId.ToString()),
+            new Claim(ClaimTypes.Role, role) 
+            };
 
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]!));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddDays(1),
+                signingCredentials: creds);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
 
 
     }

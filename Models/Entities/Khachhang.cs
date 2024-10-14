@@ -21,5 +21,7 @@ public partial class Khachhang
 
     public DateOnly? Ngaysinh { get; set; }
 
+    public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
+
     public virtual ICollection<Dondathang> Dondathangs { get; set; } = new List<Dondathang>();
 }

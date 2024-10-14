@@ -23,6 +23,8 @@ public partial class Sach
 
     public int? MaNxb { get; set; }
 
+    public virtual ICollection<Cart> Carts { get; set; } = new List<Cart>();
+
     public virtual ICollection<Chitietdondathang> Chitietdondathangs { get; set; } = new List<Chitietdondathang>();
 
     public virtual Chude? MaCdNavigation { get; set; }

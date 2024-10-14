@@ -1,4 +1,5 @@
-﻿using HuynhKom_lab00_bansach.Models.Entities;
+﻿using HuynhKom_lab00_bansach.Middleware;
+using HuynhKom_lab00_bansach.Models.Entities;
 using HuynhKom_lab00_bansach.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
@@ -13,6 +14,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<QuanLySachContext>(c =>
         c.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
 builder.Services.AddScoped<ISachService, SachService>();
+builder.Services.AddScoped<IQuanLyService, QuanLyService>();
 
 // C?u hình d?ch v? CORS
 builder.Services.AddCors(options =>
@@ -48,7 +50,8 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuer = true,
         ValidateAudience = true,
         ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"]
+        ValidAudience = jwtSettings["Audience"],
+        ClockSkew = TimeSpan.Zero
     };
     options.Events = new JwtBearerEvents
     {
@@ -78,17 +81,15 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
 
 // Cấu hình middleware
+app.UseMiddleware<TokenValidationMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
-
 
 
 
